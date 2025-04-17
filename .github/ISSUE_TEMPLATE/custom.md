@@ -1,21 +1,3 @@
----
-name: Custom issue template
-about: Describe this issue template's purpose here.
-title: ''
-labels: ''
-assignees: ''
-
----
-
----
-name: issue template
-about: 이슈 템플릿
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ## 📌 이슈명
 <-- 이슈의 설명을 포함하여 작성해주세요 -->
 
