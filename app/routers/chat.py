@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, Request, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from app.services.rag.rag_service import generate_rag_response
+from app.services.rag.rag_service import generate_rag_response, stream_rag_response
 
 router = APIRouter(prefix="/api/chat", tags=["Chat"])
 
@@ -31,3 +32,34 @@ async def chat(request: ChatRequest, authorization: str = Header(default=None)):
 
     answer = generate_rag_response(request.question, token)
     return {"answer": answer}
+
+@router.post("/stream")
+async def chat_stream(request: ChatRequest, authorization: str = Header(None)):
+    # [임시] Authorization이 없으면 하드코딩된 토큰 사용
+    if authorization:
+        token = authorization.replace("Bearer ", "")
+    else:
+        # 로컬 테스트용 임시 토큰
+        token = "eyJhbGciOiJIUzI1NiJ9.eyJsb2dpbklkIjoiMDQwOGtzeUBnbWFpbC5jb20iLCJyb2xlIjoiUk9MRV9VU0VSIiwiaWF0IjoxNzQ4MjY4MDkwLCJleHAiOjE3NDgyNzE2OTB9.kHH8APaqD5i7EcFgYKAU0Sg0TCEYPd4490PfNcrTL9k"
+        print("[디버그] Authorization 헤더 없음 → 임시 토큰 사용")
+    stream = stream_rag_response(request.question, token)
+
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream"
+    )
+
+'''
+@router.post("/stream")
+async def chat_stream(request: ChatRequest, authorization: str = Header(None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization 헤더가 필요합니다.")
+    
+    token = authorization.replace("Bearer ", "")
+    stream = stream_rag_response(request.question, token)
+
+    return StreamingResponse(
+        stream,
+        media_type="text/event-stream"
+    )
+'''

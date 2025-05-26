@@ -94,3 +94,32 @@ def generate_rag_response(question: str, token: str) -> str:
 
     response = qa.invoke({"query": question})
     return {"result": response["result"]}
+
+
+async def stream_rag_response(question: str, token: str):
+    user_info = fetch_user_info(token)
+    user_prompt = build_user_prompt(user_info)
+
+    prompt_template = PromptTemplate(
+        input_variables=["context", "question"],
+        template=f"""{user_prompt}
+
+다음은 관련 문서입니다:
+{{context}}
+
+질문: {{question}}
+답변:"""
+    )
+
+    chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=get_retriever(),
+        chain_type_kwargs={"prompt": prompt_template}
+    )
+
+    async for chunk in chain.astream({"query": question}):  
+        if isinstance(chunk, str):
+            yield f"data: {chunk}\n\n"
+        elif isinstance(chunk, dict) and "result" in chunk:
+            yield f"data: {chunk['result']}\n\n"
