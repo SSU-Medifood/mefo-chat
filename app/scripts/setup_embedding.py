@@ -7,17 +7,19 @@ from app.services.rag.split_pdf import split_pdf
 from app.services.rag.rag_service import initialize_chroma_from_markdown
 
 
-pdf_path = "data/2025년도_대사증후군_건강실천안내서.pdf"
+pdf_path = "data/함께해요_당뇨병_관리!_(2024).pdf"
 md_output_dir = "data/markdown_chunks"
 os.makedirs(md_output_dir, exist_ok=True)
 
 # 1. PDF → 10페이지씩 분할
-#split_files = split_pdf(pdf_path, batch_size=10)
+split_files = split_pdf(pdf_path, batch_size=10)
+'''
 split_files = sorted([
     os.path.join("data", fname)
     for fname in os.listdir("data")
     if fname.startswith("2025년도_대사증후군_건강실천안내서_") and fname.endswith(".pdf")
 ])
+'''
 
 # 2. 각 분할 PDF → 비동기 요청 → Markdown 저장
 markdown_paths = []

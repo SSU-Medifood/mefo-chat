@@ -28,7 +28,6 @@ def initialize_chroma_from_file(pdf_path: str):
     split_docs = splitter.split_documents(docs)
 
     db = Chroma.from_documents(split_docs, passage_embedding, persist_directory=persist_dir)
-    db.persist()
     
 #markdown용 임베딩 함수
 def initialize_chroma_from_markdown(md_path: str):
@@ -43,7 +42,6 @@ def initialize_chroma_from_markdown(md_path: str):
     split_docs = splitter.split_documents(docs)
 
     db = Chroma.from_documents(split_docs, passage_embedding, persist_directory=persist_dir)
-    db.persist()
     
 def get_retriever():
     persist_dir = "./chroma_db"
