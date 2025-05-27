@@ -87,8 +87,11 @@ async def stream_rag_response(question: str, token: str):
     user_prompt = build_user_prompt(user_info)
 
     prompt_template = PromptTemplate(
-        input_variables=["context", "input"],
+        input_variables=["context", "input",  "chat_history"],
         template=f"""{user_prompt}
+
+이전 대화:
+{{chat_history}}
 
 다음은 관련 문서입니다:
 {{context}}
