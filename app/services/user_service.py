@@ -16,3 +16,12 @@ def fetch_user_info(token: str) -> dict:
     if response.status_code != 200:
         raise Exception(f"유저 정보 요청 실패: {response.status_code}")
     return response.json()["data"]
+
+
+def fetch_user_id(token: str) -> int:
+    url = f"{BASE_URL}/api/user/loginCheck"
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()["data"]["userId"]
+    raise Exception("userId 조회 실패")
