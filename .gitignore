@@ -174,4 +174,4 @@ cython_debug/
 .pypirc
 
 data/
-chroma_db
+chroma_db/
