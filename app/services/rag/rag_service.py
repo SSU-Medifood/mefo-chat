@@ -30,10 +30,13 @@ def initialize_chroma_from_markdown(md_path: str):
 
     db = Chroma.from_documents(split_docs, passage_embedding, persist_directory=persist_dir)
     
-def get_retriever():
+def get_retriever(k: int = 6):
     persist_dir = "./chroma_db/2025_merged"
     db = Chroma(persist_directory=persist_dir, embedding_function=query_embedding)
-    return db.as_retriever()
+    return db.as_retriever(
+        search_type="mmr", 
+        search_kwargs={"k": k}
+    )
 
 #개인화 프롬포트
 def build_user_prompt(user_info: dict) -> str:

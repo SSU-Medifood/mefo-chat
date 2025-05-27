@@ -1,5 +1,5 @@
 from fastapi.responses import JSONResponse
-from typing import Any, Optional
+from typing import Any
 
 class ApiResponse:
     @staticmethod
