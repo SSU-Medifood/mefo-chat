@@ -1,0 +1,36 @@
+# Python 캐시 파일
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Conda 환경 관련 파일
+.env
+.venv/
+*.conda
+*.env
+*.yaml
+*.yml
+
+# 패키지 캐시
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# IDE 설정
+.vscode/
+.idea/
+*.swp
+
+# Git 및 기타
+.git/
+.gitignore
+Dockerfile
+docker-compose.yml
+*.log
+*.db
+
+# OS 및 기타
+.DS_Store
+Thumbs.db
