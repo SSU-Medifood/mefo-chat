@@ -6,7 +6,7 @@ load_dotenv()
 
 # LangChain LLM setting
 llm = ChatOpenAI(
-    openai_api_key=os.getenv("DEEPSEEK_API_KEY"),
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
     base_url="https://api.deepseek.com", 
     model="deepseek-chat",
     temperature=0.7 #답변 창의성/ 1에 가까울수록 창의적
