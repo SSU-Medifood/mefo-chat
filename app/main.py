@@ -11,6 +11,7 @@ app.add_middleware(
         "https://mefoweb.com",
         "https://api.mefoweb.com",
         "https://care.mefoweb.com",
+        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
