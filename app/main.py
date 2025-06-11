@@ -23,4 +23,8 @@ app.include_router(recommend.router)
 
 @app.get("/")
 def root():
-    return {"message": "FastAPI + LangChain 서버 실행 중"}
+    return {"message": "서버 실행 중"}
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
