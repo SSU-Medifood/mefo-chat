@@ -1,6 +1,6 @@
 import requests
 
-url = 'http://openapi.foodsafetykorea.go.kr/api/abba144c850845ff9e10/COOKRCP01/json/295/300'
+url = 'http://openapi.foodsafetykorea.go.kr/api/abba144c850845ff9e10/COOKRCP01/json/162/162'
 response = requests.get(url)
 data = response.json()
 

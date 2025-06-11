@@ -11,26 +11,39 @@ def safe_int(val):
         return 0
 
 # 재료 파싱 함수
+import re
+
 def split_ingredient(raw_text):
-    # 재료 단위로 추출: '재료명(내용)' 또는 '재료명'
-    pattern = r'[^,]+(?:\([^)]+\))?'
-    items = re.findall(pattern, raw_text)
+    # \r\n → \n 통일
+    raw_text = raw_text.replace('\r\n', '\n')
+
+    # 1. 괄호 안 쉼표 보존을 위해 임시 토큰으로 치환
+    raw_text = re.sub(r'\(([^)]+)\)', lambda m: '(' + m.group(1).replace(',', '[[COMMA]]') + ')', raw_text)
+
+    # 2. 쉼표 또는 줄바꿈 기준으로 분할
+    items = re.split(r'[,\n]+', raw_text)
 
     results = []
     for item in items:
         item = item.strip()
-        # ●, : 같은 prefix 제거
+        if not item:
+            continue
+
+        # ● 또는 : 같은 prefix 제거
         if ':' in item:
             item = item.split(':', 1)[1].strip()
         item = re.sub(r'^●+', '', item).strip()
 
-        # 괄호 있는 경우
+        # 3. "재료", "소스" 또는 "소스명 + 재료" 제거
+        item = re.sub(r'^(재료|[\w가-힣]*소스|양념)\s+', '', item).strip()
+
+        # 4. 괄호 있는 경우: 이름 / 용량 추출
         match = re.match(r'^(.+?)\((.+?)\)$', item)
         if match:
             name = match.group(1).strip()
-            capacity = match.group(2).strip()
+            capacity = match.group(2).replace('[[COMMA]]', ',').strip()
         else:
-            # 공백 기준 fallback
+            # fallback: 공백 기준 분할
             parts = item.split(' ', 1)
             name = parts[0].strip()
             capacity = parts[1].strip() if len(parts) > 1 else ''
@@ -38,6 +51,7 @@ def split_ingredient(raw_text):
         results.append((name, capacity))
 
     return results
+
 
 # 조리설명 앞 숫자 제거
 def clean_instruction(text):
@@ -54,7 +68,7 @@ conn = pymysql.connect(
 cursor = conn.cursor()
 
 # 2. API 요청
-url = 'http://openapi.foodsafetykorea.go.kr/api/abba144c850845ff9e10/COOKRCP01/json/37/38'
+url = 'http://openapi.foodsafetykorea.go.kr/api/abba144c850845ff9e10/COOKRCP01/json/201/202'
 response = requests.get(url)
 data = response.json()
 recipes = data['COOKRCP01']['row']

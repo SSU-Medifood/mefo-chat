@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import chat
+from app.routers import chat, recommend
 
 app = FastAPI()
 
@@ -11,6 +11,7 @@ app.add_middleware(
         "https://mefoweb.com",
         "https://api.mefoweb.com",
         "https://care.mefoweb.com",
+        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(chat.router)
+app.include_router(recommend.router)
 
 @app.get("/")
 def root():

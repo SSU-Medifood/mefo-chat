@@ -40,9 +40,13 @@ def get_retriever(k: int = 6):
 
 #개인화 프롬포트
 def build_user_prompt(user_info: dict) -> str:
-    allergies = [item["allergyDrug"] for item in user_info.get("allergyDrugList", [])]
-    diseases = user_info.get("diseaseList", [])
-
+    disease_names    = [ d["disease"]   for d in user_info.get("diseaseList", []) ]
+    allergy_drugs    = [ a["allergyDrug"] for a in user_info.get("allergyDrugList", []) ]
+    allergy_etc      = [ e["allergyEtc"]  for e in user_info.get("allergyEtcList", []) ]
+    
+    disease_str      = ", ".join(disease_names)    if disease_names    else "없음"
+    allergy_drug_str = ", ".join(allergy_drugs)    if allergy_drugs    else "없음"
+    allergy_etc_str  = ", ".join(allergy_etc)      if allergy_etc      else "없음"
     prompt = f"""
 당신은 헬스 케어 상담 전문가입니다. 아래는 사용자의 건강 정보입니다. 이 정보를 기반으로 문서를 검색하고 가장 알맞은 조언을 제공하세요.
 
@@ -50,8 +54,9 @@ def build_user_prompt(user_info: dict) -> str:
 - 키/몸무게: {user_info['height']}cm / {user_info['weight']}kg
 - 흡연 여부: {user_info['userSmoke']}
 - 음주 빈도: {user_info['userDrink']}
-- 질병 이력: {', '.join(diseases) if diseases else '없음'}
-- 알레르기 약물: {', '.join(allergies) if allergies else '없음'}
+- 질병 이력: {disease_str}
+- 알레르기 약물: {allergy_drug_str}
+- 알레르기 기타: {allergy_etc_str}
 
 이 정보를 고려하여 사용자의 건강 상태에 맞는 문서 기반 맞춤 응답을 생성하세요.
 """

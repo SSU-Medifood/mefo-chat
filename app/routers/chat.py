@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
@@ -20,7 +21,17 @@ async def chat(
     return {"answer": answer}
 
 
-@router.post("/stream")
+@router.post(
+    "/stream",
+    summary="챗봇 스트리밍 응답",
+    description="""
+    SSE(Server-Sent Events) 방식으로 RAG 챗봇의 실시간 응답을 스트리밍
+    """,
+    responses={
+        401: {"description": "인증 실패"},
+        500: {"description": "내부 서버 오류"},
+    },
+    )
 async def chat_stream(
     request: ChatRequest, 
     token: str = Depends(get_token)
@@ -32,7 +43,14 @@ async def chat_stream(
     )
     
 
-@router.get("/examples", response_class=JSONResponse)
+@router.get(
+    "/examples", 
+    summary="예시 질문 조회",
+    response_class=JSONResponse,
+    responses={
+        500: {"description": "예시 질문 조회 실패"},
+    },
+    )
 async def get_example_questions():
     try:
         example_questions = [
