@@ -162,3 +162,64 @@ DISEASE_FILTER_RULES = {
         "ingredient_name": lambda name: not any(x in name for x in ["기름", "튀김", "가공육"])
     },
 }
+
+
+ALLERGY_FILTER_RULES = {
+    "알류(가금류에 한함)": {
+        "ingredient_name": lambda name: not any(x in name for x in ["달걀", "계란", "유정란", "알", "노른자", "흰자"])
+    },
+    "우유": {
+        "ingredient_name": lambda name: not any(x in name for x in ["우유", "치즈", "버터", "요거트", "연유", "크림"])
+    },
+    "메밀": {
+        "ingredient_name": lambda name: "메밀" not in name
+    },
+    "땅콩": {
+        "ingredient_name": lambda name: "땅콩" not in name
+    },
+    "대두": {
+        "ingredient_name": lambda name: any(x not in name for x in ["두유", "콩", "대두", "된장", "간장", "청국장"])
+    },
+    "밀": {
+        "ingredient_name": lambda name: not any(x in name for x in ["밀가루", "빵", "국수", "파스타", "밀"])
+    },
+    "잣": {
+        "ingredient_name": lambda name: "잣" not in name
+    },
+    "호두": {
+        "ingredient_name": lambda name: "호두" not in name
+    },
+    "게": {
+        "ingredient_name": lambda name: "게" not in name
+    },
+    "새우": {
+        "ingredient_name": lambda name: "새우" not in name
+    },
+    "오징어": {
+        "ingredient_name": lambda name: "오징어" not in name
+    },
+    "고등어": {
+        "ingredient_name": lambda name: "고등어" not in name
+    },
+    "조개류(굴, 전복, 홍합)": {
+        "ingredient_name": lambda name: not any(x in name for x in ["조개", "굴", "전복", "홍합"])
+    },
+    "복숭아": {
+        "ingredient_name": lambda name: "복숭아" not in name
+    },
+    "토마토": {
+        "ingredient_name": lambda name: "토마토" not in name
+    },
+    "닭고기": {
+        "ingredient_name": lambda name: not any(x in name for x in ["닭", "치킨", "닭가슴살"])
+    },
+    "돼지고기": {
+        "ingredient_name": lambda name: not any(x in name for x in ["돼지", "삼겹살", "목살", "돼지고기"])
+    },
+    "쇠고기": {
+        "ingredient_name": lambda name: not any(x in name for x in ["소고기", "쇠고기", "불고기", "우둔살"])
+    },
+    "아황산류": {
+        "ingredient_name": lambda name: "아황산" not in name
+    },
+}

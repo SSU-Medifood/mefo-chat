@@ -1,6 +1,6 @@
 import pandas as pd
 from app.services.user_service import fetch_user_info
-from app.recipe.filter_rules import DISEASE_FILTER_RULES
+from app.recipe.filter_rules import DISEASE_FILTER_RULES, ALLERGY_FILTER_RULES
 from app.recipe.recipes_loader import load_recipe_df, load_ingredient_df
 
 def get_rule_based_recommendations(token: str):
@@ -28,12 +28,17 @@ def get_rule_based_recommendations(token: str):
                 if field in recipes_filtered.columns:
                     recipes_filtered = recipes_filtered[recipes_filtered[field].apply(condition)]
 
-    # 알레르기 필터링
+    # 알레르기 기반 필터링
     for allergy in allergy_items:
-        allergy = allergy.strip().lower()
-        block_ids = ingredient_df[
-            ingredient_df['ingredient_name'].str.contains(allergy)
-        ]['recipe_id'].unique()
-        recipes_filtered = recipes_filtered[~recipes_filtered['id'].isin(block_ids)]
+        allergy = allergy.strip()
+        rules = ALLERGY_FILTER_RULES.get(allergy)
+        if not rules:
+            continue
+        for field, condition in rules.items():
+            if field == "ingredient_name":
+                block_ids = ingredient_df[
+                    ingredient_df['ingredient_name'].apply(lambda name: not condition(name))
+                ]['recipe_id'].unique()
+                recipes_filtered = recipes_filtered[~recipes_filtered['id'].isin(block_ids)]
 
     return recipes_filtered
