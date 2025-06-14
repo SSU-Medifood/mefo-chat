@@ -36,8 +36,4 @@ def get_rule_based_recommendations(token: str):
         ]['recipe_id'].unique()
         recipes_filtered = recipes_filtered[~recipes_filtered['id'].isin(block_ids)]
 
-    if len(recipes_filtered) == 0:
-        return []
-
-    result_df = recipes_filtered.sample(n=min(6, len(recipes_filtered)))
-    return result_df[["id", "menu"]].to_dict(orient="records")
+    return recipes_filtered

@@ -20,7 +20,12 @@ def get_connection():
 
 def load_recipe_df():
     conn = get_connection()
-    df = pd.read_sql("SELECT * FROM recipe", conn)
+    query = """
+        SELECT r.id, r.menu, r.food_type, r.cooking_type, r.calories, i.image_small AS imageSmall
+        FROM recipe r
+        LEFT JOIN recipe_image i ON r.id = i.recipe_id
+    """
+    df = pd.read_sql(query, conn)
     conn.close()
     return df
 
