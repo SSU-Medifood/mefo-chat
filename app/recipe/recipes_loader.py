@@ -21,7 +21,10 @@ def get_connection():
 def load_recipe_df():
     conn = get_connection()
     query = """
-        SELECT r.id, r.menu, r.food_type, r.cooking_type, r.calories, i.image_small AS imageSmall
+        SELECT 
+            r.id, r.menu, r.food_type, r.cooking_type, r.calories,
+            r.carbohydrate, r.protein, r.fat, r.sodium,
+            i.image_small AS imageSmall
         FROM recipe r
         LEFT JOIN recipe_image i ON r.id = i.recipe_id
     """
