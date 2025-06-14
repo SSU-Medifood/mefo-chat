@@ -12,11 +12,9 @@ from fastapi.concurrency import run_in_threadpool
 from langchain.schema import AIMessage
 from app.services.chat_service import generate_response
 from app.services.user_service import fetch_user_info, fetch_user_id
+from app.utils.redis import redis
 
-REDIS_URL       = os.getenv("REDIS_URL")
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-
-redis = aioredis.from_url(REDIS_URL, encoding="utf-8", decode_responses=True)
 
 def _seconds_until_midnight() -> int:
     now      = datetime.now()

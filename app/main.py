@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import chat, recommend
+from app.routers import chat, recommend, recipe
 
 app = FastAPI()
 
@@ -20,6 +20,7 @@ app.add_middleware(
 
 app.include_router(chat.router)
 app.include_router(recommend.router)
+app.include_router(recipe.router)
 
 @app.get("/")
 def root():
