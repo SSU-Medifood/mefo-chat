@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import json
-from datetime import timedelta, datetime
+from datetime import datetime
 from fastapi.concurrency import run_in_threadpool
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -107,7 +107,7 @@ def get_more_recipes(recipe_id: int, top_k: int = 20, return_n: int = 6):
     if recipe_id not in full_df['id'].values:
         raise ValueError("해당 recipeId가 존재하지 않습니다.")
 
-    full_df = full_df.reset_index(drop=True)
+    full_df = full_df[["id", "menu", "imageSmall", "content_string"]].reset_index(drop=True)
     tfidf = TfidfVectorizer()
     tfidf_matrix = tfidf.fit_transform(full_df['content_string'])
 
@@ -121,12 +121,6 @@ def get_more_recipes(recipe_id: int, top_k: int = 20, return_n: int = 6):
     candidates = full_df[full_df['id'] != recipe_id].sort_values(by='similarity', ascending=False).head(top_k)
 
     sampled = recommend_random(candidates, n=return_n)
+    print("[DEBUG] sampled:", sampled)
 
-    return [
-        {
-            "recipeId": r["id"],
-            "name": r["menu"],
-            "imageSmall": r["imageSmall"]
-        }
-        for r in sampled
-    ]
+    return sampled
