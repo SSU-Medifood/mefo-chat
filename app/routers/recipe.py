@@ -19,9 +19,9 @@ router = APIRouter(
     하루 단위로 업데이트
     """
 )
-def recommend_daily_meal(token: str = Depends(get_token)):
+async def recommend_daily_meal(token: str = Depends(get_token)):
     try:
-        result = get_daily_meal_plan(token)
+        result = await get_daily_meal_plan(token)
         return {
             "success": True,
             "count": len(result),
@@ -40,18 +40,18 @@ def recommend_daily_meal(token: str = Depends(get_token)):
     10분마다 업데이트
     """
 )
-def recommend_total(token: str = Depends(get_token)):
+async def recommend_total(token: str = Depends(get_token)):
     try:
         filtered_df = get_rule_based_recommendations(token)
         if filtered_df.empty:
             return {
                 "success": True,
                 "count": 0,
-                "recipes": []
+                "data": []
             }
             
         ingredient_df = load_ingredient_df()
-        recommended = get_content_based_recommendations(
+        recommended = await get_content_based_recommendations(
             token=token,
             filtered_df=filtered_df,
             ingredient_df=ingredient_df

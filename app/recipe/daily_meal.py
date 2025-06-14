@@ -1,15 +1,19 @@
 import pandas as pd
 import random
 import itertools
+import json
 import numpy as np
+from datetime import date, datetime, timedelta
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from fastapi.concurrency import run_in_threadpool
 
 from app.recipe.recipes_loader import load_recipe_df, load_ingredient_df
 from app.recipe.content_utils import add_content_string_column
 from app.recipe.rule_based import get_rule_based_recommendations
 from app.recipe.nutrition_calculator import calculate_daily_targets
-from app.services.user_service import fetch_user_info, fetch_liked_recipes
+from app.services.user_service import fetch_user_info,  fetch_user_id, fetch_liked_recipes
+from app.utils.redis import redis
 
 
 # food types 중복 방지
@@ -84,12 +88,30 @@ def format_recipe_output(recipes: list[dict]) -> dict:
     return output
 
 
-def get_daily_meal_plan(token: str) -> dict:
+def _seconds_until_midnight() -> int:
+    now = datetime.now()
+    midnight = datetime.combine(now.date() + timedelta(days=1), datetime.min.time())
+    return int((midnight - now).total_seconds())
+
+
+async def get_daily_meal_plan(token: str) -> dict:
+    user_id = await run_in_threadpool(fetch_user_id, token)
+    today = date.today().isoformat()
+    cache_key = f"daily_meal:{user_id}:{today}"
+
+    cached = await redis.get(cache_key)
+    if cached:
+        print("[CACHE] daily meal cache hit")
+        return json.loads(cached)
+
     rule_filtered_df = get_rule_based_recommendations(token)
     if rule_filtered_df.empty:
-        rule_filtered_df = load_recipe_df()  # fallback
+        rule_filtered_df = load_recipe_df()
 
     ingredient_df = load_ingredient_df()
     content_top_n = get_content_top_n(token, rule_filtered_df, ingredient_df, top_k=30)
+    result = select_balanced_combination(content_top_n)
 
-    return select_balanced_combination(content_top_n)
+    await redis.set(cache_key, json.dumps(result, ensure_ascii=False), ex=_seconds_until_midnight())
+
+    return result
