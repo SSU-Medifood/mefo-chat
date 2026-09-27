@@ -2,7 +2,7 @@
 > **RAG 챗봇을 사용한 맞춤형 건강 비서 서비스 AI Server** 
 
 ## 배포 상태
-- **현재 배포 상태:** 🛑 리팩토링 진행 중 (추후 배포 예정, 로컬 환경 실행 가능)
+- **현재 배포 상태:** 🛑 리팩토링 진행 중 (추후 배포 예정)
 - **GitHub Repository (AI):** https://github.com/SSU-Medifood/mefo-chat
 
 ## 기술 스택
@@ -78,17 +78,7 @@
 
 ## 실행 방법
 ```bash
-# 1. 저장소 클론
-$ git clone https://github.com/SSU-Medifood/mefo-chat.git
-
-# 2. 패키지 설치
-$ pip install -r requirements.txt
-
-# 3. 환경 변수 설정
-# 루트 디렉토리에 .env 파일을 생성하고 필요한 API KEY 및 DB URL 값을 입력하세요.
-
-# 4. 프로젝트 실행
-$ uvicorn app.main:app --reload
+리팩토링 후 작성 예정
 ```
 
 ## 라이선스
